@@ -1,0 +1,6 @@
+*.log
+tmp/
+data/
+map-data/
+old/
+__pycache__/
