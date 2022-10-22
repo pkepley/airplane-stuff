@@ -7,6 +7,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+
 # data lives here
 plane_data_dir = Path("./data")
 map_data_dir   = Path("./map-data")
@@ -28,7 +29,8 @@ end_time = (pd.to_datetime(start_time, unit='s') + timedelta(days=1))\
 end_time = int(end_time)
 
 # set up plot
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(facecolor='k')
+ax.set_facecolor('k')
 ax.set_xlim([-73.25, -76.25])
 ax.set_ylim([38.75, 41.75])
 ax.invert_xaxis()
@@ -66,7 +68,7 @@ lines = dict()
 states_path = map_data_dir/"states"/"cb_2018_us_state_500k.shp"
 if states_path.exists():
     states = gpd.read_file(states_path)
-    states.boundary.plot(ax = ax, color='k')
+    states.boundary.plot(ax = ax, edgecolor='w', facecolor='k')
 else:
     print("States shapefile (states_path) not found.")
 
@@ -74,7 +76,8 @@ else:
 home_path = map_data_dir/"home.csv"
 if home_path.exists():
     home = pd.read_csv(home_path)
-    ax.scatter(home.lon, home.lat, c='r')
+    ax.scatter(home.lon, home.lat, s=49,
+               c='lightpink',edgecolor='firebrick',zorder=100)
 else:
     print("Receiver file (home_path) not found.")
 
@@ -82,7 +85,8 @@ else:
 airports_path = map_data_dir/"airports.csv"
 if airports_path.exists():
     airports = pd.read_csv(airports_path)
-    ax.scatter(airports.lon, airports.lat)
+    ax.scatter(airports.lon, airports.lat, s=49,
+               c='lightskyblue', edgecolor='dodgerblue', zorder=100)
 else:
     print("Airports files (airports_path) not found.")
 
@@ -121,7 +125,8 @@ def update_lines(ti, n_trail=10):
             .tz_convert("US/Eastern")\
             .strftime("%Y-%m-%d %I:%M %p")
     )
-    ax.set_title(t_record)
+    ax.set_title(t_record, color='w', size=12, family='mono')
+    # ax.set_title(t_record, color='w', size=12, family='mono')#family='Fira Code')
 
     return lines
 
@@ -130,3 +135,9 @@ ani = animation.FuncAnimation(
    fig, update_lines, len(times), interval=50
 )
 plt.show()
+
+
+#ani = animation.FuncAnimation(
+#   fig, update_lines, len(times), interval=25
+#)
+#ani.save("my-output.mp4", dpi=600, bitrate=-1)
